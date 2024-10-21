@@ -47,5 +47,7 @@ class MaNo(Base_alg):
                                 1 / self.args["num_classes"])
                     loss = nn.functional.cross_entropy(logits, targets)
                     losses.append(loss)
+                import pdb
+                pdb.set_trace()
         losses = torch.Tensor(loss)
         return torch.mean(losses)
