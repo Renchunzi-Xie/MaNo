@@ -35,10 +35,8 @@ class MaNo(Base_alg):
 
     def uniform_cross_entropy(self):
         losses = []
-        count = 0
-        while count < 5:
-            count += 1
-            for batch_idx, batch_data in enumerate(self.val_loader):
+        for batch_idx, batch_data in enumerate(self.val_loader):
+            while batch_idx < 5:
                 inputs, labels = batch_data[0], batch_data[1]
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
                 with torch.no_grad():
