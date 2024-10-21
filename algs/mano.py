@@ -36,6 +36,8 @@ class MaNo(Base_alg):
     def uniform_cross_entropy(self):
         losses = []
         for batch_idx, batch_data in enumerate(self.val_loader):
+            import pdb
+            pdb.set_trace()
             while batch_idx < 5:
                 inputs, labels = batch_data[0], batch_data[1]
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
