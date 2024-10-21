@@ -36,8 +36,6 @@ class MaNo(Base_alg):
     def uniform_cross_entropy(self):
         losses = []
         for batch_idx, batch_data in enumerate(self.val_loader):
-            import pdb
-            pdb.set_trace()
             while batch_idx < 5:
                 inputs, labels = batch_data[0], batch_data[1]
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
@@ -45,6 +43,8 @@ class MaNo(Base_alg):
                     logits = self.base_model(inputs)
                     targets = torch.ones((logits.shape[0], self.args["num_classes"])).to(self.device) * (
                                 1 / self.args["num_classes"])
+                    import pdb
+                    pdb.set_trace()
                     loss = nn.functional.cross_entropy(logits, targets)
                     losses.append(loss)
                 import pdb
