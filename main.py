@@ -112,10 +112,7 @@ if __name__ == "__main__":
                 start_time = time.time()
                 scores = alg_obj.evaluate()
                 end_time = time.time()
-                if args['use_f1_score']:
-                    test_acc = alg_obj.f1_score_test()
-                else:
-                    test_acc = alg_obj.test()
+                test_acc = alg_obj.test()
                 scores_list.append(float(scores))
                 time_list.append(float(end_time - start_time))
                 test_acc_list.append(float(test_acc))
