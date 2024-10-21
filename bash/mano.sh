@@ -20,4 +20,4 @@ do
 done
     python init_base_model.py --arch resnet18 --train_epoch 20 --train_data_name cifar10 --lr 0.001 --batch_size 128 --seed 123 --gpu 7 --cifar_data_path /mnt/sharedata/ssd/common/datasets --cifar_corruption_path /mnt/sharedata/ssd/common/datasets/CIFAR-10-C
 
-    python main.py --alg mano --arch resnet18 --severity -1 --dataname cifar10 --lr 0.001 --batch_size 128 --seed 1 --gpu 7 --cifar_data_path /mnt/sharedata/ssd/common/datasets --cifar_corruption_path /mnt/sharedata/ssd/common/datasets/CIFAR-10-C --norm_type 4 --score errors --beta 8
+    python main.py --alg mano --arch resnet18 --severity -1 --dataname cifar10 --lr 0.001 --batch_size 128 --seed 1 --gpu 7 --cifar_data_path /mnt/sharedata/ssd/common/datasets --cifar_corruption_path /mnt/sharedata/ssd/common/datasets/CIFAR-10-C --norm_type 4

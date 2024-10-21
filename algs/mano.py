@@ -1,9 +1,6 @@
 import torch
 from algs.base_alg import Base_alg
 import torch.nn as nn
-import numpy as np
-from models.utils import get_model, get_imagenet_model
-import os
 
 
 class MaNo(Base_alg):

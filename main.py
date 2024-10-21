@@ -8,7 +8,6 @@ import time
 parser = argparse.ArgumentParser(description='ProjNorm.')
 parser.add_argument('--arch', default='resnet18', type=str)
 parser.add_argument('--alg', default='standard', type=str)
-parser.add_argument('--score', default='id_ood_gap', type=str)
 
 parser.add_argument('--gpu', type=str, default=None)
 parser.add_argument('--cifar_data_path',
@@ -24,7 +23,7 @@ parser.add_argument('--batch_size', default=128, type=int)
 parser.add_argument('--lr', default=0.001, type=float)
 parser.add_argument('--threshold', default=0.5, type=float)
 parser.add_argument('--seed', default=1, type=int)
-
+parser.add_argument('--norm_type', default=4, type=int)
 # pacs
 parser.add_argument('--source', default='None', type=str)
 
