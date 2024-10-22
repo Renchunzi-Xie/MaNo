@@ -27,15 +27,6 @@ def load_Imagenet(corruption_type,
             transforms.Normalize(mean=mean, std=std)
         ])
         dataset = datasets.ImageFolder(root=clean_cifar_path + '/' + 'train', transform=transform)
-    # elif (corruption_type == 'clean') and (datatype == 'val'):
-    #     transform = transforms.Compose([
-    #         transforms.Resize(256),  # Resize images to 256 x 256
-    #         transforms.CenterCrop(224),  # Center crop image
-    #         transforms.RandomHorizontalFlip(),
-    #         transforms.ToTensor(),  # Converting cropped images to tensors
-    #         transforms.Normalize(mean=mean, std=std)
-    #     ])
-    #     dataset = datasets.ImageFolder(root=clean_cifar_path + '/' + 'ILSVRC2012_img_val', transform=transform)
     else:
 
         transform = transforms.Compose([
