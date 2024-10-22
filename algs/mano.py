@@ -24,7 +24,7 @@ class MaNo(Base_alg):
         return scores.mean()
 
     def scaling_method(self, logits):
-        loss = self.uniform_cross_entropy()
+        loss = self.args['delta']
         if loss > 5:
             outputs = nn.functional.normalize(logits, dim=1, p=1)
         else:
@@ -48,6 +48,4 @@ class MaNo(Base_alg):
             else:
                 break
         losses = torch.Tensor(loss)
-        import pdb
-        pdb.set_trace()
         return torch.mean(losses)

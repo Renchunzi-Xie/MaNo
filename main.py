@@ -24,6 +24,8 @@ parser.add_argument('--lr', default=0.001, type=float)
 parser.add_argument('--threshold', default=0.5, type=float)
 parser.add_argument('--seed', default=1, type=int)
 parser.add_argument('--norm_type', default=4, type=int)
+parser.add_argument('--delta', default=0, type=float)
+
 # pacs
 parser.add_argument('--source', default='None', type=str)
 
@@ -110,6 +112,8 @@ if __name__ == "__main__":
                 # Define model
                 alg_obj = create_alg(args['alg'], val_loader, device, args)
                 start_time = time.time()
+                if args['delta'] == 0:
+                    args['delta'] = alg_obj.uniform_cross_entropy()
                 scores = alg_obj.evaluate()
                 end_time = time.time()
                 test_acc = alg_obj.test()
@@ -139,6 +143,8 @@ if __name__ == "__main__":
                     alg_obj = create_alg(args['alg'], val_loader, device, args)
 
                     start_time = time.time()
+                    if args['delta'] == 0:
+                        args['delta'] = alg_obj.uniform_cross_entropy()
                     scores = alg_obj.evaluate()
                     end_time = time.time()
 
