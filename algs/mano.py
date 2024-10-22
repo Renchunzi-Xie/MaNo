@@ -26,7 +26,7 @@ class MaNo(Base_alg):
     def scaling_method(self, logits):
         loss = self.args['delta']
         if loss > 5:
-            outputs = torch.exp(logits)
+            outputs = torch.softmax(logits, dim=1)
         else:
             outputs = logits + 1 + logits ** 2 / 2
             min_value = torch.min(outputs, 1, keepdim=True)[0].expand_as(outputs)
