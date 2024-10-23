@@ -30,6 +30,7 @@ class MaNo(Base_alg):
         else:
             outputs = logits + 1 + logits ** 2 / 2
             min_value = torch.min(outputs, 1, keepdim=True)[0].expand_as(outputs)
+            # Remove min values to make sure outputs are positive
             outputs = nn.functional.normalize(outputs - min_value, dim=1, p=1)
         return outputs
 
