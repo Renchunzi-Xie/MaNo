@@ -31,8 +31,10 @@ class MaNo(Base_alg):
             outputs = logits + 1 + logits ** 2 / 2
             min_value = torch.min(outputs, 1, keepdim=True)[0].expand_as(outputs)
             
-            # Remove min values to make sure outputs are positive
-            # This is necessary for orders higher than 2
+            """Remove min values to ensure all entries are positive. This is in particular
+            necessary for orders higher than 2 to ensure that outputs are
+            probability distributions."""
+            
             outputs = nn.functional.normalize(outputs - min_value, dim=1, p=1)
         return outputs
 
