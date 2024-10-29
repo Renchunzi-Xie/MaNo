@@ -29,9 +29,6 @@ We conduct large-scale experiments under several distribution shifts with ResNet
 
 ## Usage
 
-## Open-source Participation
-Do not hesitate to contribute to this project, we would be happy to receive feedback and integrate your suggestions.
-
 ## Authors
 - [Renchunzi Xie](https://scholar.google.com/citations?user=EQSNE-wAAAAJ&hl=zh-CN)
 - [Ambroise Odonnat](https://ambroiseodt.github.io/)
