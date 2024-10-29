@@ -1,3 +1,5 @@
+> [!WARNING]
+> This library is currently in a phase of active development. All features are subject to change without prior notice. 
 ## MaNo (NeurIPS'24)
 **The repository contains the official implementation of MaNo, a training-free method to assess the generalization performance of neural networks under distribution shifts introduced in** 
 
@@ -6,5 +8,4 @@
 <br/>*Equal contribution.
 
 ## Overview
-> [!WARNING]
-> This library is currently in a phase of active development. All features are subject to change without prior notice. 
+
