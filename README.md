@@ -16,6 +16,7 @@
 We conduct large-scale experiments under several distribution shifts with ResNets, ConvNext, and ViT on various open-source benchmarks. 
 
 🥇 **SOTA performance.** Our approach **MaNo** provides the best and most robust accuracy estimation.
+
 🚀 **Qualitative benefits.** Our approach is training-free, fast and memory efficient.
 <p align="center">
 <img src="https://github.com/user-attachments/assets/b2baa7d4-06b6-4435-9ffc-3b730e9bc76e" height="250"> &nbsp;&nbsp;&nbsp;&nbsp;
