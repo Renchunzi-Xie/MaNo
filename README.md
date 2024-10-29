@@ -6,16 +6,21 @@
 <br/>*Equal contribution.
 
 ## Overview
-**MaNo** is an efficient training-free approach grounded in theory that leverages logits to estimate the generalization performance of a pre-trained neural network on a test set subject to distribution shifts. It makes use of $\sigma$, a novel normalization function for the logits to deal with poorly-calibrated scenarios. Given a *pre-trained* model $f$ and a test set $D_{test} = (x_i)_{i=1}^N$ with K classes, **MaNo** operates as follows:
+**MaNo** is an efficient training-free approach grounded in theory that leverages logits to estimate the generalization performance of a pre-trained neural network under distribution shifts. It makes use of $\sigma$, a novel normalization function to deal with poorly-calibrated scenarios. Given a *pre-trained* model $f$ and a test set $D_{test} = (x_i)_{i=1}^N$ with K classes, **MaNo** operates as follows:
 - Recover the logits $\theta_i = f(x_i)$
 - Normalize the logits $\theta_i \to \sigma(\theta_i) \in \Delta_K$
 - Fill a prediction matrix $P \in \mathbb{R}^{N \times K}$ with rows $\sigma(\theta_i)$
 - Compute the estimation score $S(f, D_{test})$ as the scaled p-norm of $P$, i.e., $S(f, D_{test}) = \frac{1}{NK} \lVert P \rVert_p$.
 
 ## Results
-We conduct large-scale experiments with ResNets, ConvNext, and ViT on various open-source benchmarks. 
+We conduct large-scale experiments under several distribution shifts with ResNets, ConvNext, and ViT on various open-source benchmarks. 
 
-🥇 Overall, **MaNo** provides the best and most robust accuracy estimation.
+🥇 **SOTA performance.** Our approach **MaNo** provides the best and most robust accuracy estimation.
+🚀 **Qualitative benefits.** Our approach is training-free, fast and memory efficient.
+<p align="center">
+<img src="https://github.com/user-attachments/assets/b2baa7d4-06b6-4435-9ffc-3b730e9bc76e" height="300"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
+<img src="https://github.com/user-attachments/assets/94f84f43-eabe-4d0c-9557-6a22063d2759" height="300">
+</p>
 
 ## Installation
 
