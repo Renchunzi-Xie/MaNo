@@ -13,7 +13,7 @@
 - Compute the estimation score $S(f, D_{test})$ as the scaled p-norm of $P$, i.e., $S(f, D_{test}) = \frac{1}{NK} \lVert P \rVert_p$.
 
 ## Results
-We conduct large-scale experiments under several distribution shifts with ResNets, ConvNext, and ViT on various open-source benchmarks. 
+We conduct large-scale experiments under several distribution shifts with ResNets, ConvNext, and ViT. 
 
 🥇 **SOTA performance.** Our approach **MaNo** provides the best and most robust accuracy estimation.
 
