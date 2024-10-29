@@ -18,8 +18,8 @@ We conduct large-scale experiments under several distribution shifts with ResNet
 🥇 **SOTA performance.** Our approach **MaNo** provides the best and most robust accuracy estimation.
 🚀 **Qualitative benefits.** Our approach is training-free, fast and memory efficient.
 <p align="center">
-<img src="https://github.com/user-attachments/assets/b2baa7d4-06b6-4435-9ffc-3b730e9bc76e" height="300"> 
-<img src="https://github.com/user-attachments/assets/94f84f43-eabe-4d0c-9557-6a22063d2759" height="300">
+<img src="https://github.com/user-attachments/assets/b2baa7d4-06b6-4435-9ffc-3b730e9bc76e" height="250"> &nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://github.com/user-attachments/assets/94f84f43-eabe-4d0c-9557-6a22063d2759" height="250">
 </p>
 
 ## Installation
