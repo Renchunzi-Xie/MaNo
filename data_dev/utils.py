@@ -47,7 +47,7 @@ def build_dataloader(dataname, args):
                                num_classes= args['num_classes'],
                                corruption_severity=args['severity'],
                                datatype=datatype)
-    elif (dataname == 'pacs') or (dataname == 'domainnet'):
+    elif dataname in ['pacs', 'domainnet']:
         if (dataname == 'pacs') and (corruption_type == 'sketch_pacs'):
             corruption_type = 'sketch'
         valset = get_pacs_loader(corruption_type,
@@ -67,7 +67,7 @@ def build_dataloader(dataname, args):
                                corruption_cifar_path=args['cifar_corruption_path'],
                                corruption_severity=args['severity'],
                                datatype=datatype)
-    elif (dataname == 'entity13') or (dataname == 'entity30') or (dataname == 'living17') or (dataname == 'nonliving26'):
+    elif dataname in ['entity13', 'entity30', 'living17', 'nonliving26']:
         if (datatype == 'train') and (args['alg']!='frechet'):
             name = args['train_data_name']
         else:
