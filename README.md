@@ -75,10 +75,12 @@ wget https://zenodo.org/record/2235448/files/weather.tar
 ## Usage
 Step 1: Pre-train models on CIFAR-10, CIFAR-100 and TinyImageNet using commands in `./bash/init_base_model.sh`.
 
-Step 2: Estimate OOD error on CIFAR-10C, CIFAR-100C and TinyImageNet-C using commands in `./bash/mano.sh`.
+Step 2: Estimate OOD error on CIFAR-10C, CIFAR-100C, and TinyImageNet-C using commands in `./bash/mano.sh`.
 
+> [!WARNING]
+> This library is currently in a phase of active refactoring to improve its usability. Some features are subject to change without prior notice. You can simply use the 'main' branch to reproduce the results. We appreciate your understanding. 
+> 
 
-Note: You can simply use the `main` branch for reproduce the results. We are trying to make the code more attractive for researchers in the other branch. Please wait...
 ## Authors
 - [Renchunzi Xie](https://scholar.google.com/citations?user=EQSNE-wAAAAJ&hl=zh-CN)
 - [Ambroise Odonnat](https://ambroiseodt.github.io/)
