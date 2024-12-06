@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mano"
+version = "0.0.0"
+authors = [
+  { name="Renchunzi Xie", email="renchunzi.xie@ntu.edu.sg" },
+  { name="Ambroise Odonnat", email="ambroiseodonnattechnologie@gmail.com" },
+  { name="Vasilii Feofanov", email="vasilii.feofanov@gmail.com" },
+]
+description = "Codebase to estimate the generalization performance of a pre-trained model on OOD test data."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    # essential
+    "scikit-learn",
+    "numpy",
+    "torch",
+    "torchvision"
+
+    # formatting
+    "black",
+    "flake8",
+    "flake8-pyproject",
+    "isort",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Renchunzi-Xie/MaNo"
+"Bug Tracker" = "https://github.com/Renchunzi-Xie/MaNo/issues"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.flake8]
+max-line-length = 120
+ignore = [
+    "E203",  # whitespace before ':'
+    "E722",  # do not use bare 'except'
+    "W503",  # line break before binary operator
+]
+per-file-ignores = [
+    '__init__.py:F401',
+]
