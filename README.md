@@ -2,8 +2,8 @@
 **The repository contains the official implementation of MaNo, a training-free method to assess the generalization performance of neural networks under distribution shifts introduced in** 
 
 >[MANO: Exploiting Matrix Norm for Unsupervised Accuracy Estimation Under Distribution Shifts](https://arxiv.org/pdf/2405.18979).
-><br/>Renchunzi Xie*, Ambroise Odonnat*, Vasilii Feofanov*, Weijian Deng, Jianfeng Zhang, Bo An.
-<br/>*Equal contribution.
+><br/>**Renchunzi Xie***, **Ambroise Odonnat***, **Vasilii Feofanov***, Weijian Deng, Jianfeng Zhang, Bo An.
+<br/>***Equal contribution**.
 
 ## Overview
 **MaNo** is an efficient training-free approach grounded in theory that leverages logits to estimate the generalization performance of a pre-trained neural network under distribution shifts. It makes use of $\sigma$, a novel normalization function to deal with poorly-calibrated scenarios. Given a *pre-trained* model $f$ and a test set $D_{test} = (x_i)_{i=1}^N$ with K classes, **MaNo** operates as follows:
@@ -72,10 +72,44 @@ curl -O https://zenodo.org/record/2235448/files/noise.tar
 curl -O https://zenodo.org/record/2235448/files/weather.tar
 ```
 ## Installation
+Please, make sure you have Python 3.9 or a newer version installed.
+
+It is preferred that the library be installed in a virtual environment, for instance with conda and Python 3.9: 
+```bash
+conda create -n myenv python==3.9
+conda activate myenv
+```
+
+If you only want use the library, you can install the latest version of the code with:
+```bash
+pip install git+https://github.com/Renchunzi-Xie/MaNo#egg=MaNo
+```
+
+If you want to contribute, you can clone the repository and install the packages as follows:
+```bash
+git clone https://github.com/Renchunzi-Xie/MaNo.git
+cd MaNo
+pip install -e .
+```
 
 ## Modules
+This package consists of several key modules:
 
-## Usage
+- ```src``: this is the main reusable folder that contains MaNo simple and efficient implementation,
+- ```data```: contains Python files to deal with the different pre-training and test datasets,
+- ```architectures```: contains the implementation of the ResNets models,
+- ```pretraining```: contains the code to pre-train the models,
+- ```evaluation```: contains the code to estimate the accuracy of your model on OOD datasets.
+- ```bash```: contains the command lines to launch experiments.
+
+## Get Started
+Step 1: Pre-train models on CIFAR-10, CIFAR-100 and TinyImageNet using commands in `./bash/init_base_model.sh`.
+
+Step 2: Estimate OOD error on CIFAR-10C, CIFAR-100C, and TinyImageNet-C using commands in `./bash/mano.sh`.
+
+> [!WARNING]
+> This library is currently in a phase of active refactoring to improve its usability. Some features are subject to change without prior notice. You can simply use the 'main' branch to reproduce the results. We appreciate your understanding. 
+> 
 
 ## Authors
 - [Renchunzi Xie](https://scholar.google.com/citations?user=EQSNE-wAAAAJ&hl=zh-CN)
