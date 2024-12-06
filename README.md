@@ -23,8 +23,39 @@ We conduct large-scale experiments under several distribution shifts with ResNet
 <img src="https://github.com/user-attachments/assets/94f84f43-eabe-4d0c-9557-6a22063d2759" height="250">
 </p>
 
+## Modules
+This package consists of several key modules:
+
+- ```src```: this is the main reusable folder that contains MaNo simple and efficient implementation,
+- ```data```: contains Python files to deal with the different pre-training and test datasets,
+- ```models```: contains the implementation of the ResNets models,
+- ```pretraining```: contains the code to pre-train the models,
+- ```evaluation```: contains the code to estimate the accuracy of your model on OOD datasets.
+- ```bash```: contains the command lines to launch experiments.
+
+## Installation
+Please, make sure you have Python 3.9 or a newer version installed.
+
+It is preferred that the library be installed in a virtual environment, for instance with conda and Python 3.9: 
+```bash
+conda create -n myenv python==3.9
+conda activate myenv
+```
+
+If you only want use the library, you can install the latest version of the code with:
+```bash
+pip install git+https://github.com/Renchunzi-Xie/MaNo#egg=MaNo
+```
+
+If you want to contribute, you can clone the repository and install the packages as follows:
+```bash
+git clone https://github.com/Renchunzi-Xie/MaNo.git
+cd MaNo
+pip install -e .
+```
+
 ## Datasets
-### Pre-trained process
+### Pretraining process
 
 1. CIFAR10 & CIFAR-100 can be downloaded in the code. 
 2. Download TinyImageNet
@@ -71,36 +102,6 @@ curl -O https://zenodo.org/record/2235448/files/extra.tar
 curl -O https://zenodo.org/record/2235448/files/noise.tar
 curl -O https://zenodo.org/record/2235448/files/weather.tar
 ```
-## Installation
-Please, make sure you have Python 3.9 or a newer version installed.
-
-It is preferred that the library be installed in a virtual environment, for instance with conda and Python 3.9: 
-```bash
-conda create -n myenv python==3.9
-conda activate myenv
-```
-
-If you only want use the library, you can install the latest version of the code with:
-```bash
-pip install git+https://github.com/Renchunzi-Xie/MaNo#egg=MaNo
-```
-
-If you want to contribute, you can clone the repository and install the packages as follows:
-```bash
-git clone https://github.com/Renchunzi-Xie/MaNo.git
-cd MaNo
-pip install -e .
-```
-
-## Modules
-This package consists of several key modules:
-
-- ```src``: this is the main reusable folder that contains MaNo simple and efficient implementation,
-- ```data```: contains Python files to deal with the different pre-training and test datasets,
-- ```models```: contains the implementation of the ResNets models,
-- ```pretraining```: contains the code to pre-train the models,
-- ```evaluation```: contains the code to estimate the accuracy of your model on OOD datasets.
-- ```bash```: contains the command lines to launch experiments.
 
 ## Get Started
 Step 1: Pre-train models on CIFAR-10, CIFAR-100 and TinyImageNet using commands in `./bash/init_base_model.sh`.
