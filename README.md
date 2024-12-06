@@ -23,16 +23,6 @@ We conduct large-scale experiments under several distribution shifts with ResNet
 <img src="https://github.com/user-attachments/assets/94f84f43-eabe-4d0c-9557-6a22063d2759" height="250">
 </p>
 
-## Modules
-This package consists of several key modules:
-
-- ```src```: this is the main reusable folder that contains MaNo simple and efficient implementation,
-- ```data```: contains Python files to deal with the different pre-training and test datasets,
-- ```models```: contains the implementation of the ResNets models,
-- ```pretraining```: contains the code to pre-train the models,
-- ```evaluation```: contains the code to estimate the accuracy of your model on OOD datasets.
-- ```bash```: contains the command lines to launch experiments.
-
 ## Installation
 Please, make sure you have Python 3.9 or a newer version installed.
 
@@ -111,6 +101,16 @@ Step 2: Estimate OOD error on CIFAR-10C, CIFAR-100C, and TinyImageNet-C using co
 > [!WARNING]
 > This library is currently in a phase of active refactoring to improve its usability. Some features are subject to change without prior notice. You can simply use the 'main' branch to reproduce the results. We appreciate your understanding. 
 > 
+
+## Modules
+This package consists of several key modules:
+
+- ```src```: this is the main reusable folder that contains MaNo simple and efficient implementation,
+- ```data```: contains Python files to deal with the different pre-training and test datasets,
+- ```models```: contains the implementation of the ResNets models,
+- ```pretraining```: contains the code to pre-train the models,
+- ```evaluation```: contains the code to estimate the accuracy of your model on OOD datasets.
+- ```bash```: contains the command lines to launch experiments.
 
 ## Authors
 - [Renchunzi Xie](https://scholar.google.com/citations?user=EQSNE-wAAAAJ&hl=zh-CN)
