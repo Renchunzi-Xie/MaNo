@@ -92,6 +92,7 @@ class MaNo:
     def evaluate(self, logits):
         batch_size = logits.shape[0] if self.batch_size is None else self.batch_size
 
+        # Compute criterion $\phi$ to select the proper normalization
         if self.uncertainty is None:
             self.calculate_uncertainty(logits)
         
@@ -99,7 +100,8 @@ class MaNo:
 
         dataset = TensorDataset(logits.type(torch.float))
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-
+        
+        # Compute the estimation score
         scores = []
         for batch_idx, logits_batch in enumerate(dataloader):
             logits_batch = logits_batch.to(self.device)
