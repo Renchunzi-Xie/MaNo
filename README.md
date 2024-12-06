@@ -97,7 +97,7 @@ This package consists of several key modules:
 
 - ```src``: this is the main reusable folder that contains MaNo simple and efficient implementation,
 - ```data```: contains Python files to deal with the different pre-training and test datasets,
-- ```architectures```: contains the implementation of the ResNets models,
+- ```models```: contains the implementation of the ResNets models,
 - ```pretraining```: contains the code to pre-train the models,
 - ```evaluation```: contains the code to estimate the accuracy of your model on OOD datasets.
 - ```bash```: contains the command lines to launch experiments.
