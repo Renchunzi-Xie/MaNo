@@ -1,5 +1,5 @@
 """ 
-Implementation of the estimation score provided by MaNo [1].
+Implementation of the MaNo estimation score provided in [1].
 
 [1] R. Xie, A. Odonnat, V. Feofanov et al. MaNo: Exploiting Matrix Norm for Unsupervised
     Accuracy Estimation under Distribution Shifts. NeurIPS 2024.
@@ -11,6 +11,15 @@ from torch.utils.data import TensorDataset, DataLoader
 
 
 class MaNo:
+    """Implementation of the MaNo estimation score provided in [1].
+
+    References
+    ----------
+
+    [1] R. Xie, A. Odonnat, V. Feofanov et al. MaNo: Exploiting Matrix Norm for Unsupervised
+        Accuracy Estimation under Distribution Shifts. NeurIPS 2024.
+    """
+
     def __init__(self, norm_order=4, threshold=5.0, taylor_order=2, batch_size=None, device="cpu"):
         """
         MaNo provides an unsupervised logit-based estimation of the test accuracy
