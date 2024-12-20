@@ -8,6 +8,7 @@ version = "0.0.0"
 authors = [
   {name="Renchunzi Xie", email="renchunzi.xie@ntu.edu.sg"},
   {name="Ambroise Odonnat", email="ambroiseodonnattechnologie@gmail.com"},
+  {name="Vasilii Feofanov", email="vasilii.feofanov@gmail.com"},
 ]
 description = "Estimate test accuracy of pre-trained model on OOD data"
 readme = "README.md"
