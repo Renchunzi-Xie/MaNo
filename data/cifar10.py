@@ -1,6 +1,4 @@
-""" Cifar10 dataset.
-Implementation inspired from https://github.com/Renchunzi-Xie/Dispersion.
-"""
+""" Cifar10 dataset."""
 
 import os
 
@@ -54,7 +52,12 @@ def get_cifar10_loader(
             transforms.Normalize(mean, std),
         ]
     )
-    dataset = datasets.CIFAR10(clean_path, train=training_flag, transform=transform, download=True)
+    dataset = datasets.CIFAR10(
+        clean_path,
+        train=training_flag,
+        transform=transform,
+        download=True,
+    )
 
     if corruption_severity > 0:
         assert not training_flag
@@ -75,7 +78,7 @@ def get_cifar10_loader(
     dataset.targets = np.array([int(item) for item in dataset.targets])
     dataset.targets = dataset.targets[index_permute].tolist()
 
-    # Subset the dataset
+    # Randomly select a subset of the dataset
     if datatype == "train" and num_samples < 50000:
         num_samples = int(num_samples)
         indices = torch.randperm(50000)[:num_samples]
