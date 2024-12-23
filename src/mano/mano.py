@@ -34,8 +34,9 @@ class MaNo:
         norm_order: int, default=4
             The order of the norm at the aggregation step.
         threshold: float, default=5.0
-            The threshold that decides the normalization strategy. If uncertainty is larger than threshold,
-            then the softmax is applied, otherwise, a Taylor approximation of the softmax is applied.
+            The threshold that decides the normalization strategy.
+            If self.criterion is larger than threshold, softmax normalization is applied.
+            Else, a Taylor approximation of the softmax is applied.
         taylor_order: int, default=2
             The Taylor approximation order.
         batch_size: int, default=None
@@ -67,11 +68,11 @@ class MaNo:
 
         # Compute uncertainty criterion to select the proper normalization
         if self.criterion is None:
-            self.get_uncertainty_(x)
+            self.get_criterion_(x)
 
         # Compute MaNo estimation score
         scores = []
-        for batch_idx, logits in enumerate(self.dataloader):
+        for _, logits in enumerate(self.dataloader):
             logits = logits.to(self.device)
             with torch.no_grad():
 
@@ -92,7 +93,7 @@ class MaNo:
         """
 
         divergences = []
-        for batch_idx, logits in enumerate(self.dataloader):
+        for _, logits in enumerate(self.dataloader):
             logits = logits.to(self.device)
             with torch.no_grad():
 
