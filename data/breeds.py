@@ -1,5 +1,7 @@
 """ BREEDS dataset."""
 
+import os
+
 import torchvision.transforms as transforms
 from .breeds_utils.helpers import get_label_mapping
 from .breeds_utils import folder
@@ -11,14 +13,34 @@ from .breeds_utils.breeds_helpers import (
 )
 
 
-def get_imagenet_breeds(
-    corruption_type,
-    clean_cifar_path,
-    corruption_cifar_path,
+def get_breeds_loader(
     name,
+    clean_path,
+    corruption_path,
+    corruption_type,
     corruption_severity=0,
     datatype="test",
 ):
+    """Get the BREEDS dataset.
+
+    Parameters
+    ----------
+    name : str
+        Name of the dataset. This is important
+        as BREEDS contains several datasets.
+    clean_path : str
+        Path to the clean data.
+    corruption_path : str
+        Path to the corrupted data.
+    corruption_type : str
+        Corruption type.
+    corruption_severity : int, default=0
+        Severity of the corruption.
+    datatype : str, default="test"
+        Type of the data. If "train", the loader is used for training.
+        If "test", it is used for testing.
+    """
+
     if name == "living17":
         ret = make_living17("./data/imagenet_class_hierarchy/", split="good")
     elif name == "entity13":
@@ -28,7 +50,7 @@ def get_imagenet_breeds(
     elif name == "nonliving26":
         ret = make_nonliving26("./data/imagenet_class_hierarchy/", split="good")
     else:
-        raise KeyError("Unknown dataset name.")
+        raise ValueError("Unknown dataset name.")
 
     source_label_mapping = get_label_mapping("custom_imagenet", ret[1][0])
     target_label_mapping = get_label_mapping("custom_imagenet", ret[1][1])
@@ -43,24 +65,20 @@ def get_imagenet_breeds(
     )
     if (corruption_type == "clean") and (datatype == "train"):
         dataset = folder.ImageFolder(
-            root=clean_cifar_path + "/" + "train",
+            root=os.path.join(clean_path, "train"),
             transform=transform,
             label_mapping=source_label_mapping,
         )
     else:
         if corruption_severity == 0:
             dataset = folder.ImageFolder(
-                root=clean_cifar_path + "/" + "train",
+                root=os.path.join(clean_path, "train"),
                 transform=transform,
                 label_mapping=target_label_mapping,
             )
         else:
             dataset = folder.ImageFolder(
-                root=corruption_cifar_path
-                + "/"
-                + corruption_type
-                + "/"
-                + str(corruption_severity),
+                root=os.path.join(corruption_path, corruption_type, str(corruption_severity)),
                 transform=transform,
                 label_mapping=target_label_mapping,
             )
