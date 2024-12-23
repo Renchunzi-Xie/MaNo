@@ -62,8 +62,10 @@ def get_cifar10_loader(
         assert not training_flag
         path_images = os.path.join(corruption_path, corruption_type + ".npy")
         path_labels = os.path.join(corruption_path, "labels.npy")
-        dataset.data = np.load(path_images)[(corruption_severity - 1) * 10000 : corruption_severity * 10000]
-        dataset.targets = list(np.load(path_labels)[(corruption_severity - 1) * 10000 : corruption_severity * 10000])
+        start = (corruption_severity - 1) * 10000
+        end = corruption_severity * 10000
+        dataset.data = np.load(path_images)[start:end]
+        dataset.targets = list(np.load(path_labels)[start:end])
         dataset.targets = [int(item) for item in dataset.targets]
 
     # Randomly permutate data
