@@ -1,4 +1,4 @@
-""" Cifar100 dataset."""
+"""Cifar100 dataset."""
 
 import os
 
@@ -38,7 +38,8 @@ def get_cifar100_loader(
     seed : int, default=1
         Random seed.
     """
-    assert datatype == "test" or datatype == "train"
+
+    assert datatype in ["train", "test"], "Error: datatype should be train or test."
     training_flag = True if datatype == "train" else False
 
     mean = [0.485, 0.456, 0.406]

@@ -1,4 +1,4 @@
-""" Cifar10 dataset."""
+"""Cifar10 dataset."""
 
 import os
 
@@ -40,7 +40,7 @@ def get_cifar10_loader(
         Random seed.
     """
 
-    assert datatype == "test" or datatype == "train"
+    assert datatype in ["train", "test"], "Error: datatype should be train or test."
     training_flag = True if datatype == "train" else False
 
     mean = [0.485, 0.456, 0.406]
@@ -60,7 +60,7 @@ def get_cifar10_loader(
     )
 
     if corruption_severity > 0:
-        assert not training_flag
+        assert not training_flag, "Error: corruption severity is only for test data."
         path_images = os.path.join(corruption_path, corruption_type + ".npy")
         path_labels = os.path.join(corruption_path, "labels.npy")
         start = (corruption_severity - 1) * 10000

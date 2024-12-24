@@ -1,4 +1,4 @@
-""" BREEDS dataset."""
+"""BREEDS dataset."""
 
 import os
 
@@ -41,6 +41,7 @@ def get_breeds_loader(
         If "test", it is used for testing.
     """
 
+    assert datatype in ["train", "test"], "Error: datatype should be train or test."
     if name == "living17":
         ret = make_living17("./data/imagenet_class_hierarchy/", split="good")
     elif name == "entity13":

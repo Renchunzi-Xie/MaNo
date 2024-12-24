@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 from data.breeds import get_breeds_loader
 from data.cifar10 import get_cifar10_loader
 from data.cifar100 import get_cifar100_loader
+from data.domain_net import get_domain_net_loader
 from data.imagenet import get_imagenet_loader
 from data.office_home import get_office_home_loader
 from data.pacs import get_pacs_loader
@@ -44,11 +45,12 @@ def build_dataloader(dataname, args):
         datatype = "test"
 
     # Load dataset
+    # Synthetic shift
     if dataname == "cifar10":
         dataset = get_cifar10_loader(
-            corruption_type,
             clean_path=args["data_path"],
             corruption_path=args["corruption_path"],
+            corruption_type=corruption_type,
             corruption_severity=args["severity"],
             datatype=datatype,
             seed=seed,
@@ -56,9 +58,9 @@ def build_dataloader(dataname, args):
         )
     elif dataname == "cifar100":
         dataset = get_cifar100_loader(
-            corruption_type,
             clean_path=args["data_path"],
             corruption_path=args["corruption_path"],
+            corruption_type=corruption_type,
             corruption_severity=args["severity"],
             datatype=datatype,
             seed=seed,
@@ -66,12 +68,12 @@ def build_dataloader(dataname, args):
         )
     elif dataname == "imagenet":
         dataset = get_imagenet_loader(
-            corruption_type,
             clean_path=args["data_path"],
             corruption_path=args["corruption_path"],
-            num_classes=args["num_classes"],
+            corruption_type=corruption_type,
             corruption_severity=args["severity"],
             datatype=datatype,
+            num_classes=args["num_classes"],
         )
     elif dataname == "tinyimagenet":
         dataset = get_tinyimagenet_loader(
@@ -81,14 +83,13 @@ def build_dataloader(dataname, args):
             corruption_severity=args["severity"],
             datatype=datatype,
         )
-    elif dataname == "pacs":
-        if (dataname == "pacs") and (corruption_type == "sketch_pacs"):
-            corruption_type = "sketch"
-        dataset = get_pacs_loader(
+
+    # Natural shift
+    elif dataname == "domainnet":
+        dataset = get_domain_net_loader(
             clean_path=args["data_path"],
             corruption_path=args["corruption_path"],
             corruption_type=corruption_type,
-            corruption_severity=args["severity"],
             datatype=datatype,
         )
     elif dataname == "office_home":
@@ -96,15 +97,25 @@ def build_dataloader(dataname, args):
             clean_path=args["data_path"],
             corruption_path=args["corruption_path"],
             corruption_type=corruption_type,
-            corruption_severity=args["severity"],
+            datatype=datatype,
+        )
+    elif dataname == "pacs":
+        if (dataname == "pacs") and (corruption_type == "sketch_pacs"):
+            corruption_type = "sketch"
+        dataset = get_pacs_loader(
+            clean_path=args["data_path"],
+            corruption_path=args["corruption_path"],
+            corruption_type=corruption_type,
             datatype=datatype,
         )
     elif dataname == "wilds_rr1":
         dataset = get_wilds_rr1_loader(
-            corruption_type,
             clean_path=args["data_path"],
-            corruption_severity=args["severity"],
+            corruption_type=corruption_type,
+            datatype=datatype,
         )
+
+    # Subpopulation shift
     elif dataname in ["entity13", "entity30", "living17", "nonliving26"]:
         if (datatype == "train") and (args["alg"] != "frechet"):
             name = args["train_data_name"]
