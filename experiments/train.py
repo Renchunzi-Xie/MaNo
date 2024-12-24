@@ -1,20 +1,21 @@
+"""Pre-training of the base models to be used to estimate their accuracy on OOD test data."""
+
 import argparse
-from models.utils import get_model
-import torch.nn as nn
-from data.utils import build_dataloader
-from data.tools import rotate_batch
-import torch
 import os
 
-"""# Configuration"""
-parser = argparse.ArgumentParser(description="Train base models for different matrics.")
+import torch
+import torch.nn as nn
+
+from data.utils import build_dataloader
+from models.utils import get_model
+
+# Arguments
+parser = argparse.ArgumentParser(description="Pre-training of base models.")
 parser.add_argument("--arch", default="resnet18", type=str)
 parser.add_argument("--gpu", type=str, default=None)
 parser.add_argument("--train_data_name", default="cifar10", type=str)
-parser.add_argument("--cifar_data_path", default="../datasets/Cifar10", type=str)
-parser.add_argument(
-    "--cifar_corruption_path", default="../datasets/Cifar10/CIFAR-10-C", type=str
-)
+parser.add_argument("--data_path", default="../datasets/Cifar10", type=str)
+parser.add_argument("--corruption_path", default="../datasets/Cifar10/CIFAR-10-C", type=str)
 parser.add_argument("--num_classes", default=10, type=int)
 parser.add_argument("--batch_size", default=128, type=int)
 parser.add_argument("--lr", default=0.001, type=float)
@@ -24,14 +25,8 @@ parser.add_argument("--seed", default=1, type=int)
 parser.add_argument("--severity", default=0, type=int)
 parser.add_argument("--init", default="matching", type=str)
 parser.add_argument("--alg", default="standard", type=str)
-# pacs
 parser.add_argument("--corruption", default="all", type=str)
 args = vars(parser.parse_args())
-
-if args["gpu"] is not None:
-    device = torch.device(f"cuda:{args['gpu']}")
-else:
-    device = torch.device("cpu")
 
 num_class_dict = {
     "cifar10": 10,
@@ -49,30 +44,56 @@ num_class_dict = {
 }
 args["num_classes"] = num_class_dict[args["train_data_name"]]
 
+# Set device
+DEVICE = torch.device(f"cuda:{args['gpu']}" if torch.cuda.is_available() else "cpu")
 
-def train(net, trainloader, device):
-    net.train()
+
+def train(model, loader, device=torch.device("cpu")):
+    """Train the base model.
+
+    Parameters
+    ----------
+    model: nn.Module
+        Base model to be trained.
+    loader: Dataloader
+        Dataloader for training data.
+    device: torch.device, default=torch.device("cpu")
+        Determine which device calculations are performed.
+    """
+
+    # Set training mode
+    model.train()
+
+    # Optimizer
     if "rr1" in args["train_data_name"]:
-        optimizer = torch.optim.Adam(net.parameters(), lr=1e-4, weight_decay=1e-5)
+        optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5)
     else:
         optimizer = torch.optim.SGD(
-            net.parameters(), lr=args["lr"], momentum=0.9, weight_decay=0.0
+            model.parameters(),
+            lr=args["lr"],
+            momentum=0.9,
+            weight_decay=0.0,
         )
+
+    # Scheduler
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer, T_max=args["train_epoch"] * len(trainloader)
+        optimizer,
+        T_max=args["train_epoch"] * len(loader),
     )
+
+    # Training loss
     criterion = nn.CrossEntropyLoss()
 
     for epoch in range(args["train_epoch"]):
         train_loss = 0
         correct = 0
         total = 0
-        for batch_idx, batch_data in enumerate(trainloader):
+        for batch_idx, batch_data in enumerate(loader):
             inputs, targets = batch_data[0], batch_data[1]
             inputs, targets = inputs.to(device), targets.to(device)
             optimizer.zero_grad()
 
-            outputs = net(inputs)
+            outputs = model(inputs)
             loss = criterion(outputs, targets)
             loss.backward()
             optimizer.step()
@@ -85,54 +106,38 @@ def train(net, trainloader, device):
                 for param_group in optimizer.param_groups:
                     current_lr = param_group["lr"]
                 print(
-                    "Epoch: ",
-                    epoch,
-                    "(",
-                    batch_idx,
-                    "/",
-                    len(trainloader),
-                    ")",
-                    "Loss: %.3f | Acc: %.3f%% (%d/%d)| Lr: %.5f"
-                    % (
-                        train_loss / (batch_idx + 1),
-                        100.0 * correct / total,
-                        correct,
-                        total,
-                        current_lr,
-                    ),
+                    f"Epoch: {epoch}",
+                    f"({batch_idx}/{len(loader)})",
+                    f"Loss: {train_loss / (batch_idx + 1):0.3f}",
+                    f"| Acc: {100.0 * correct / total:0.3f} ({int(correct)}/{int(total)})",
+                    f"| Lr: {current_lr:0.5f}",
                 )
             scheduler.step()
-    net.eval()
-    return net
+
+    # Set evaluation mode
+    model.eval()
+    return model
 
 
 if __name__ == "__main__":
-    # save path
+
+    # Saving path
     if args["train_data_name"] == "imagenet":
-        save_dir_path = "./checkpoints/{}".format(
-            args["train_data_name"]
-            + "_"
-            + args["arch"]
-            + "_"
-            + str(args["num_classes"])
-        )
+        save_dir_path = print(f"./checkpoints/{args['train_data_name']}_{args['arch']}_{str(args['num_classes'])}")
     elif args["train_data_name"] in ["pacs", "office_home", "domainnet"]:
-        save_dir_path = "./checkpoints/{}".format(
-            args["corruption"] + "_" + args["arch"]
-        )
+        save_dir_path = print(f"./checkpoints/{args['corruption']}_{args['arch']}")
     else:
-        save_dir_path = "./checkpoints/{}".format(
-            args["train_data_name"] + "_" + args["arch"]
-        )
+        save_dir_path = print(f"./checkpoints/{args['train_data_name']}_{args['arch']}")
     if not os.path.exists(save_dir_path):
         os.makedirs(save_dir_path)
 
-    # setup train/val_iid loaders
+    # Setup train/val_iid loaders
     trainloader = build_dataloader(args["train_data_name"], args)
 
-    # init and train base model
-    base_model = get_model(args["arch"], args["num_classes"], args["seed"]).to(device)
-    base_model = train(base_model, trainloader, device)
+    # Train base model
+    base_model = get_model(args["arch"], args["num_classes"], args["seed"]).to(DEVICE)
+    base_model = train(model=base_model, loader=trainloader, device=DEVICE)
 
-    torch.save(base_model.state_dict(), "{}/base_model.pt".format(save_dir_path))
-    print("base model saved to", "{}/base_model.pt".format(save_dir_path))
+    # Save base model
+    torch.save(base_model.state_dict(), f"{save_dir_path}/base_model.pt")
+    print("base model saved to", f"{save_dir_path}/base_model.pt")

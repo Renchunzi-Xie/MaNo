@@ -20,7 +20,14 @@ class MaNo:
         Accuracy Estimation under Distribution Shifts. NeurIPS 2024.
     """
 
-    def __init__(self, norm_order=4, threshold=5.0, taylor_order=2, batch_size=None, device="cpu"):
+    def __init__(
+        self,
+        norm_order=4,
+        threshold=5.0,
+        taylor_order=2,
+        batch_size=None,
+        device=torch.device("cpu"),
+    ):
         """
         MaNo provides an unsupervised logit-based estimation of the test accuracy
         in a training-free fashion. It consists in three simple steps:
@@ -34,14 +41,15 @@ class MaNo:
         norm_order: int, default=4
             The order of the norm at the aggregation step.
         threshold: float, default=5.0
-            The threshold that decides the normalization strategy. If uncertainty is larger than threshold,
-            then the softmax is applied, otherwise, a Taylor approximation of the softmax is applied.
+            The threshold that decides the normalization strategy.
+            If self.criterion is larger than threshold, softmax normalization is applied.
+            Else, a Taylor approximation of the softmax is applied.
         taylor_order: int, default=2
             The Taylor approximation order.
         batch_size: int, default=None
             If batch_size is not None, then the score is evaluated in a batch fashion.
-        device: {'cpu', 'cuda'}, default=None
-            On which device calculations are performed
+        device: torch.device, torch.device("cpu")
+            Determine which device calculations are performed.
         """
 
         self.norm_order = norm_order
@@ -60,6 +68,7 @@ class MaNo:
     def evaluate(self, x):
         """Recover MaNo estimation score."""
 
+        # Initialize dataloader
         self.n_samples, self.n_classes = x.shape
         batch_size = self.n_samples if self.batch_size is None else self.batch_size
         dataset = TensorDataset(x.type(torch.float))
@@ -67,11 +76,11 @@ class MaNo:
 
         # Compute uncertainty criterion to select the proper normalization
         if self.criterion is None:
-            self.get_uncertainty_(x)
+            self.get_criterion_()
 
         # Compute MaNo estimation score
         scores = []
-        for batch_idx, logits in enumerate(self.dataloader):
+        for _, logits in enumerate(self.dataloader):
             logits = logits.to(self.device)
             with torch.no_grad():
 
@@ -92,7 +101,7 @@ class MaNo:
         """
 
         divergences = []
-        for batch_idx, logits in enumerate(self.dataloader):
+        for _, logits in enumerate(self.dataloader):
             logits = logits.to(self.device)
             with torch.no_grad():
 
@@ -100,7 +109,7 @@ class MaNo:
                 targets = (1 / self.n_classes) * torch.ones((logits.shape[0], self.n_classes))
                 targets = targets.to(self.device)
 
-                # Recover KL divergence
+                # Compute KL divergence
                 divergence = F.cross_entropy(logits, targets)
                 divergences.append(divergence)
 
@@ -108,15 +117,19 @@ class MaNo:
         return
 
     def normalize_(self, logits):
-        """Normalize the logits."""
+        """Normalize the logits.
+        If self.criterion is larger than threshold, softmax normalization is applied.
+        Else, a Taylor approximation of the softmax is applied.
+        """
 
-        # Model is uncertain
-        if self.criterion <= self.threshold:
+        # Apply softmax normalization
+        if self.criterion > self.threshold:
+            outputs = torch.softmax(logits, dim=1)
+
+        # Apply Taylor approximation
+        else:
             outputs = self.taylor_softmax_(logits)
 
-        # Model is confident
-        else:
-            outputs = torch.softmax(logits, dim=1)
         return outputs
 
     def taylor_softmax_(self, logits):
@@ -126,7 +139,7 @@ class MaNo:
         for i in range(2, self.taylor_order + 1):
             outputs += (logits**i) / i
 
-        # Ensure that all entries are positive (needed when taylor_order > 2)
+        # This is done to ensure that outputs is a probability distribution
         min_value = torch.min(outputs, 1, keepdim=True)[0].expand_as(outputs)
         outputs = F.normalize(outputs - min_value, dim=1, p=1)
         return outputs

@@ -25,6 +25,9 @@ dependencies = [
     "torch",
     "torchvision",
 
+    # WILDS library
+    "wilds",
+
     # formatting
     "black",
     "flake8",

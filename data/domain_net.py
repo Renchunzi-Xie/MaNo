@@ -1,4 +1,4 @@
-"""PACS dataset."""
+"""DomainNet dataset."""
 
 import os
 
@@ -6,13 +6,13 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 
 
-def get_pacs_loader(
+def get_domain_net_loader(
     clean_path,
     corruption_path,
     corruption_type,
     datatype="test",
 ):
-    """Get the PACS dataset.
+    """Get the DomainNet dataset.
 
     Parameters
     ----------

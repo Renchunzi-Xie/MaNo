@@ -1,19 +1,20 @@
+"""Evaluate the performance of MaNo on various datasets."""
+
 import argparse
-from algs.utils import create_alg
-from data.utils import build_dataloader
-import numpy as np
 import time
 
-"""Configuration"""
-parser = argparse.ArgumentParser(description="ProjNorm.")
+import numpy as np
+import torch
+
+from data.utils import build_dataloader
+
+# Arguments
+parser = argparse.ArgumentParser(description="Evaluate performance of MaNo.")
 parser.add_argument("--arch", default="resnet18", type=str)
 parser.add_argument("--alg", default="standard", type=str)
-
 parser.add_argument("--gpu", type=str, default=None)
-parser.add_argument("--cifar_data_path", default="../datasets/Cifar10", type=str)
-parser.add_argument(
-    "--cifar_corruption_path", default="../datasets/Cifar10/CIFAR-10-C", type=str
-)
+parser.add_argument("--data_path", default="../datasets/Cifar10", type=str)
+parser.add_argument("--corruption_path", default="../datasets/Cifar10/CIFAR-10-C", type=str)
 parser.add_argument("--corruption", default="all", type=str)
 parser.add_argument("--severity", default=0, type=int)
 parser.add_argument("--dataname", default="cifar10", type=str)
@@ -30,29 +31,6 @@ parser.add_argument("--delta", default=0, type=float)
 parser.add_argument("--source", default="None", type=str)
 
 args = vars(parser.parse_args())
-
-import torch
-
-if args["gpu"] is not None:
-    device = torch.device(f"cuda:{args['gpu']}")
-else:
-    device = torch.device("cpu")
-
-
-def correlation(var1, var2):
-    return np.corrcoef(var1, var2)[0, 1]
-
-
-def correlation2(var1, var2):
-    return (np.corrcoef(var1, var2)[0, 1]) ** 2
-
-
-# spearman
-def spearman(var1, var2):
-    from scipy import stats
-
-    return stats.spearmanr(var1, var2)
-
 
 num_class_dict = {
     "cifar10": 10,
@@ -71,8 +49,28 @@ num_class_dict = {
 
 args["num_classes"] = num_class_dict[args["dataname"]]
 
+# Set device
+DEVICE = torch.device(f"cuda:{args['gpu']}" if torch.cuda.is_available() else "cpu")
+
+
+def correlation(var1, var2):
+    return np.corrcoef(var1, var2)[0, 1]
+
+
+def correlation2(var1, var2):
+    return (np.corrcoef(var1, var2)[0, 1]) ** 2
+
+
+# spearman
+def spearman(var1, var2):
+    from scipy import stats
+
+    return stats.spearmanr(var1, var2)
+
+
 if __name__ == "__main__":
-    # device
+
+    # Corruptions
     if (args["dataname"] == "cifar10") or (args["dataname"] == "cifar100"):
         corruption_list = [
             "brightness",
@@ -194,11 +192,7 @@ if __name__ == "__main__":
         scores_list = []
         test_acc_list = []
         time_list = []
-        print(
-            "alg:{}, dataname:{}, model:{}".format(
-                args["alg"], args["dataname"], args["arch"]
-            )
-        )
+        print("alg:{}, dataname:{}, model:{}".format(args["alg"], args["dataname"], args["arch"]))
         for corruption in corruption_list:
             for severity in range(1, max_severity + 1):
                 args["corruption"] = corruption
@@ -206,7 +200,7 @@ if __name__ == "__main__":
                 # (original x, true labels)
                 val_loader = build_dataloader(args["dataname"], args)
                 # Define model
-                alg_obj = create_alg(args["alg"], val_loader, device, args)
+                alg_obj = create_alg(args["alg"], val_loader, DEVICE, args)
                 start_time = time.time()
                 if args["delta"] == 0:
                     args["delta"] = alg_obj.uniform_cross_entropy()
@@ -232,11 +226,7 @@ if __name__ == "__main__":
         scores_list = []
         test_acc_list = []
         time_list = []
-        print(
-            "alg:{}, dataname:{}, model:{}".format(
-                args["alg"], args["dataname"], args["arch"]
-            )
-        )
+        print("alg:{}, dataname:{}, model:{}".format(args["alg"], args["dataname"], args["arch"]))
         for corruption in corruption_list:
             for source in corruption_list:
                 if corruption != source:
@@ -245,7 +235,7 @@ if __name__ == "__main__":
                     args["severity"] = 1
                     val_loader = build_dataloader(args["dataname"], args)
                     # Define model
-                    alg_obj = create_alg(args["alg"], val_loader, device, args)
+                    alg_obj = create_alg(args["alg"], val_loader, DEVICE, args)
 
                     start_time = time.time()
                     if args["delta"] == 0:
@@ -264,6 +254,8 @@ if __name__ == "__main__":
                     )
         mean_score = np.mean(scores_list)
         mean_time = np.mean(time_list)
-        print("Mean scores:{}, time:{}".format(mean_score, mean_time))
-        print("Correlation:{}".format(correlation2(scores_list, test_acc_list)))
-        print("Spearman:{}".format(spearman(scores_list, test_acc_list).correlation))
+
+    # Print results
+    print(f"Mean scores:{mean_score}, time:{mean_time}")
+    print(f"Correlation:{correlation2(scores_list, test_acc_list)}")
+    print(f"Spearman:{spearman(scores_list, test_acc_list).correlation}")
