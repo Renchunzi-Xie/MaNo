@@ -77,8 +77,8 @@ wget http://csr.bu.edu/ftp/visda/2019/multi-source/sketch.zip
 ### Evaluation process
 1. Download CIFAR-10C & CIFAR-100C
 ```angular2html
-curl -O https://zenodo.org/record/2535967/files/CIFAR-10-C.tar
-curl -O https://zenodo.org/record/3555552/files/CIFAR-100-C.tar
+wget https://zenodo.org/record/2535967/files/CIFAR-10-C.tar
+wget https://zenodo.org/record/3555552/files/CIFAR-100-C.tar
 ```
 2. Download TinyImageNet-C
 ```angular2html
@@ -86,11 +86,11 @@ wget http://cs231n.stanford.edu/tiny-imagenet-200.zip
 ```
 3. Download ImageNet-C
 ```angular2html
-curl -O https://zenodo.org/record/2235448/files/blur.tar
-curl -O https://zenodo.org/record/2235448/files/digital.tar
-curl -O https://zenodo.org/record/2235448/files/extra.tar
-curl -O https://zenodo.org/record/2235448/files/noise.tar
-curl -O https://zenodo.org/record/2235448/files/weather.tar
+wget https://zenodo.org/record/2235448/files/blur.tar
+wget https://zenodo.org/record/2235448/files/digital.tar
+wget https://zenodo.org/record/2235448/files/extra.tar
+wget https://zenodo.org/record/2235448/files/noise.tar
+wget https://zenodo.org/record/2235448/files/weather.tar
 ```
 
 ## Get Started
