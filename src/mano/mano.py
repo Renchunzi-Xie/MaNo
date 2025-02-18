@@ -81,7 +81,6 @@ class MaNo:
         for _, logits in enumerate(self.dataloader):
             logits = logits.to(self.device)
             with torch.no_grad():
-
                 # Normalization
                 normalized_logits = self._softrun(logits)
 
@@ -92,10 +91,8 @@ class MaNo:
         return torch.Tensor(scores).mean()
 
     def _get_criterion(self):
-        """Compute the uncertainty criterion at the dataset level.
-        The criterion is equal to the average KL divergence between
-        the uniform and the softmax probabilities. A low value means that the softmax
-        probabilities are close to the uniform and hence that the model is uncertain.
+        """Compute criterion to select the proper normalization.
+        See Eq.(6) of [1]_ for more details.
         """
 
         divergences = []
@@ -115,16 +112,7 @@ class MaNo:
         return
 
     def _softrun(self, logits):
-        """Normalize the logits following Eq.(6) of [1].
-        If self.criterion is larger than threshold, softmax normalization is applied.
-        Else, a Taylor approximation of the softmax is applied.
-
-        References
-        ----------
-
-        [1] R. Xie, A. Odonnat, V. Feofanov et al. MaNo: Exploiting Matrix Norm for Unsupervised
-            Accuracy Estimation under Distribution Shifts. NeurIPS 2024.
-        """
+        """Normalize the logits following Eq.(6) of [37]_."""
 
         # Apply softmax normalization
         if self.criterion > self.threshold:
