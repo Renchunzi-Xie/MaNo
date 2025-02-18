@@ -1,4 +1,4 @@
-""" 
+"""
 Implementation of the MaNo estimation score provided in [1].
 
 [1] R. Xie, A. Odonnat, V. Feofanov et al. MaNo: Exploiting Matrix Norm for Unsupervised
@@ -11,12 +11,34 @@ from torch.utils.data import TensorDataset, DataLoader
 
 
 class MaNo:
-    """Implementation of the MaNo estimation score provided in [1].
+    """Implementation of the MaNo estimation score provided in [1]_.
+
+    MaNo provides an unsupervised logit-based estimation of the test accuracy
+    in a training-free fashion. It consists in three simple steps:
+
+    1) Criterion: Determine the appropriate logit normalization,
+    2) Normalization: normalize the logits such that they have the same range,
+    2) Aggregation: aggregate the normalized logits using an entry-wise matrix norm.
+
+    Parameters
+    ----------
+    norm_order: int, default=4
+        The order of the norm at the aggregation step.
+    threshold: float, default=5.0
+        The threshold that decides the normalization strategy.
+        If self.criterion is larger than threshold, softmax normalization is applied.
+        Else, a Taylor approximation of the softmax is applied.
+    taylor_order: int, default=2
+        The Taylor approximation order.
+    batch_size: int, default=None
+        If batch_size is not None, then the score is evaluated in a batch fashion.
+    device: torch.device, torch.device("cpu")
+        Determine which device calculations are performed.
 
     References
     ----------
 
-    [1] R. Xie, A. Odonnat, V. Feofanov et al. MaNo: Exploiting Matrix Norm for Unsupervised
+    .. [1] R. Xie, A. Odonnat, V. Feofanov et al. MaNo: Exploiting Matrix Norm for Unsupervised
         Accuracy Estimation under Distribution Shifts. NeurIPS 2024.
     """
 
@@ -28,30 +50,6 @@ class MaNo:
         batch_size=None,
         device=torch.device("cpu"),
     ):
-        """
-        MaNo provides an unsupervised logit-based estimation of the test accuracy
-        in a training-free fashion. It consists in three simple steps:
-
-        1) Criterion: Determine the appropriate logit normalization,
-        2) Normalization: normalize the logits such that they have the same range,
-        2) Aggregation: aggregate the normalized logits using an entry-wise matrix norm.
-
-        Parameters
-        ----------
-        norm_order: int, default=4
-            The order of the norm at the aggregation step.
-        threshold: float, default=5.0
-            The threshold that decides the normalization strategy.
-            If self.criterion is larger than threshold, softmax normalization is applied.
-            Else, a Taylor approximation of the softmax is applied.
-        taylor_order: int, default=2
-            The Taylor approximation order.
-        batch_size: int, default=None
-            If batch_size is not None, then the score is evaluated in a batch fashion.
-        device: torch.device, torch.device("cpu")
-            Determine which device calculations are performed.
-        """
-
         self.norm_order = norm_order
         self.threshold = threshold
         self.taylor_order = taylor_order
@@ -76,28 +74,25 @@ class MaNo:
 
         # Compute uncertainty criterion to select the proper normalization
         if self.criterion is None:
-            self.get_criterion_()
+            self._get_criterion()
 
         # Compute MaNo estimation score
         scores = []
         for _, logits in enumerate(self.dataloader):
             logits = logits.to(self.device)
             with torch.no_grad():
-
                 # Normalization
-                normalized_logits = self.normalize_(logits)
+                normalized_logits = self._softrun(logits)
 
                 # Aggregation
-                score = self.aggregate_(normalized_logits)
+                score = self._aggregate(normalized_logits)
             scores.append(score)
 
         return torch.Tensor(scores).mean()
 
-    def get_criterion_(self):
-        """Compute the uncertainty criterion at the dataset level.
-        The criterion is equal to the average KL divergence between
-        the uniform and the softmax probabilities. A low value means that the softmax
-        probabilities are close to the uniform and hence that the model is uncertain.
+    def _get_criterion(self):
+        """Compute criterion to select the proper normalization.
+        See Eq.(6) of [1]_ for more details.
         """
 
         divergences = []
@@ -116,11 +111,8 @@ class MaNo:
         self.criterion = torch.Tensor(divergences).mean()
         return
 
-    def normalize_(self, logits):
-        """Normalize the logits.
-        If self.criterion is larger than threshold, softmax normalization is applied.
-        Else, a Taylor approximation of the softmax is applied.
-        """
+    def _softrun(self, logits):
+        """Normalize the logits following Eq.(6) of [37]_."""
 
         # Apply softmax normalization
         if self.criterion > self.threshold:
@@ -128,11 +120,11 @@ class MaNo:
 
         # Apply Taylor approximation
         else:
-            outputs = self.taylor_softmax_(logits)
+            outputs = self._taylor_softmax(logits)
 
         return outputs
 
-    def taylor_softmax_(self, logits):
+    def _taylor_softmax(self, logits):
         """Compute Taylor approximation."""
 
         outputs = 1 + logits
@@ -144,7 +136,7 @@ class MaNo:
         outputs = F.normalize(outputs - min_value, dim=1, p=1)
         return outputs
 
-    def aggregate_(self, logits):
+    def _aggregate(self, logits):
         """Compute the normalized matrix p-norm of logits."""
 
         # Compute the p-norm
