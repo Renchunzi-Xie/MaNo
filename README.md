@@ -77,9 +77,7 @@ Step 1: Pre-train models on CIFAR-10, CIFAR-100 and TinyImageNet using commands 
 
 Step 2: Estimate OOD error on CIFAR-10C, CIFAR-100C, and TinyImageNet-C using commands in `./bash/mano.sh`.
 
-> [!WARNING]
-> This library is currently in a phase of active refactoring to improve its usability. Some features are subject to change without prior notice. You can simply use the 'main' branch to reproduce the results. We appreciate your understanding. 
-> 
+You can simply use the 'main' branch to reproduce the results. 
 
 ## Authors
 - [Renchunzi Xie](https://scholar.google.com/citations?user=EQSNE-wAAAAJ&hl=zh-CN)
@@ -92,13 +90,14 @@ The code is distributed under the MIT license.
 ## Citation
 If you find this work useful in your research, please cite:
 ```
-@misc{xie2024manoexploitingmatrixnorm,
-      title={MANO: Exploiting Matrix Norm for Unsupervised Accuracy Estimation Under Distribution Shifts}, 
-      author={Renchunzi Xie and Ambroise Odonnat and Vasilii Feofanov and Weijian Deng and Jianfeng Zhang and Bo An},
-      year={2024},
-      eprint={2405.18979},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2405.18979}, 
+@inproceedings{xie2024manoexploitingmatrixnorm,
+ author = {Xie, Renchunzi and Odonnat, Ambroise and Feofanov, Vasilii and Deng, Weijian and Zhang, Jianfeng and An, Bo},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {A. Globerson and L. Mackey and D. Belgrave and A. Fan and U. Paquet and J. Tomczak and C. Zhang},
+ pages = {41767--41802},
+ publisher = {Curran Associates, Inc.},
+ title = {MaNo: Exploiting Matrix Norm for Unsupervised Accuracy Estimation Under Distribution Shifts},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2024/file/49abf767d606b72f74ea6009176fafeb-Paper-Conference.pdf},
+ volume = {37},
 }
 ```
